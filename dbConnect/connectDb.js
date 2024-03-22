@@ -8,6 +8,7 @@ export const connectDb = (url) => {
         mongoose.connection.close();
         process.exit(1);
     });
+
     mongoose.connection.once('open', () => {
         console.log('Connected to MongoDB');
     });

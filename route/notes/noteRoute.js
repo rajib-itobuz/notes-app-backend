@@ -1,4 +1,4 @@
-import notesController from "../../controller/notes/notes.js";
+import notesController from "../../controller/notes/notesController.js";
 import { verifyToken } from "../../middleware/verifyToken.js";
 
 

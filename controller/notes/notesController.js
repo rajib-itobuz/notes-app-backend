@@ -6,7 +6,11 @@ class notesController {
         try {
             const { id } = jwt.decode(req.token)
 
-            const { title, description } = req.body;
+            let { title, description } = req.body;
+            title = title.trim();
+            description = description.trim();
+
+
             if (title && description) {
                 const note = await NotesApp.findOne({ title });
                 if (note) {
@@ -34,7 +38,11 @@ class notesController {
 
             const id = JSON.parse(req.query.id)
 
-            const { title, description } = req.body;
+            let { title, description } = req.body;
+            title = title.trim();
+            description = description.trim();
+
+
             if (title || description) {
                 const newUpdatedNote = await NotesApp.findOneAndUpdate({ _id: id, userId }, { title, description }, { returnOriginal: false });
 

@@ -10,13 +10,16 @@ class authController {
 
     async registerUser(req, res) {
         try {
-            const { email, password } = req.body;
+            let { email, password } = req.body;
+            email = email.trim().toLowerCase();
+            password = password.trim();
 
             if (email && password) {
 
-                if (!String(email).trim().toLowerCase().match(emailValidator)) {
+                if (!String(email).match(this.emailValidator)) {
                     throw new Error("invalid email");
                 }
+
 
                 const hashedPassword = bcrypt.hashSync(password, Number(process.env.SALT));
                 const user = await User.create({ email, password: hashedPassword });
@@ -38,10 +41,12 @@ class authController {
 
     async loginUser(req, res) {
         try {
-            const { email, password } = req.body;
+            let { email, password } = req.body;
+            email = email.trim().toLowerCase();
+            password = password.trim();
 
             if (email && password) {
-                if (!String(email).trim().toLowerCase().match(this.emailValidator)) {
+                if (!String(email).match(this.emailValidator)) {
                     throw new Error("invalid email");
                 }
 
