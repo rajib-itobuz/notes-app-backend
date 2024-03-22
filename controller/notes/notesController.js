@@ -19,12 +19,12 @@ class notesController {
 
                 const newNote = await NotesApp.create({ title, description, userId: id });
                 if (newNote) {
-                    return res.status(200).json({ status: 200, message: "note created successfully", data: newNote });
+                    return res.status(200).send({ status: 200, message: "note created successfully", data: newNote });
                 }
             } else
                 throw new Error("missing fields")
         } catch (err) {
-            return res.status(400).json({ status: 400, message: err.message, data: null });
+            return res.status(400).send({ status: 400, message: err.message, data: null });
         }
     }
 
@@ -47,12 +47,12 @@ class notesController {
                 const newUpdatedNote = await NotesApp.findOneAndUpdate({ _id: id, userId }, { title, description }, { returnOriginal: false });
 
                 if (newUpdatedNote) {
-                    return res.status(200).json({ status: 200, message: "updated successfully", data: newUpdatedNote });
+                    return res.status(200).send({ status: 200, message: "updated successfully", data: newUpdatedNote });
                 }
             } else
                 throw new Error("missing fields")
         } catch (err) {
-            return res.status(400).json({ status: 400, message: err.message, data: null });
+            return res.status(400).send({ status: 400, message: err.message, data: null });
         }
     }
 
@@ -64,12 +64,12 @@ class notesController {
                 const queryText = JSON.parse(req.query.q);
                 const data = await NotesApp.find({ title: { '$regex': queryText, '$options': 'i' }, userId: id })
 
-                res.status(200).json({ status: 200, message: `search results in db for ${queryText}`, data })
+                res.status(200).send({ status: 200, message: `search results in db for ${queryText}`, data })
             } else {
                 throw new Error("missing query param")
             }
         } catch (err) {
-            res.status(400).json({ status: 400, message: err.message, data: null });
+            res.status(400).send({ status: 400, message: err.message, data: null });
         }
     }
 
@@ -80,12 +80,12 @@ class notesController {
                 const itemCount = JSON.parse(req.query.items);
                 const data = await NotesApp.find({ userId: id }, {}, { sort: { updatedAt: -1 } })
 
-                return res.status(200).json({ status: 200, message: `last udpated notes @ ${itemCount}`, data: data.slice(0, itemCount) })
+                return res.status(200).send({ status: 200, message: `last udpated notes @ ${itemCount}`, data: data.slice(0, itemCount) })
             } else {
                 throw new Error("missing query param")
             }
         } catch (err) {
-            return res.status(400).json({ status: 400, message: err.message, data: null });
+            return res.status(400).send({ status: 400, message: err.message, data: null });
         }
     }
 
@@ -95,13 +95,13 @@ class notesController {
             if (itemIds.length > 0) {
                 const { id } = jwt.decode(req.token)
                 const data = await NotesApp.updateMany({ userId: id, _id: { $in: itemIds } }, { isHidden: true }, { returnOriginal: false })
-                return res.status(200).json({ status: 200, message: `udpated notes`, data })
+                return res.status(200).send({ status: 200, message: `udpated notes`, data })
 
             } else {
                 throw new Error("id missing/empty")
             }
         } catch (err) {
-            return res.status(400).json({ status: 400, message: err.message, data: null });
+            return res.status(400).send({ status: 400, message: err.message, data: null });
         }
     }
 
@@ -111,13 +111,13 @@ class notesController {
             if (itemIds.length > 0) {
                 const { id } = jwt.decode(req.token)
                 const data = await NotesApp.updateMany({ userId: id, _id: { $in: itemIds } }, { isHidden: false }, { returnOriginal: false })
-                return res.status(200).json({ status: 200, message: `udpated notes`, data })
+                return res.status(200).send({ status: 200, message: `udpated notes`, data })
 
             } else {
                 throw new Error("id missing/empty")
             }
         } catch (err) {
-            return res.status(400).json({ status: 400, message: err.message, data: null });
+            return res.status(400).send({ status: 400, message: err.message, data: null });
         }
     }
 
@@ -127,13 +127,13 @@ class notesController {
             if (itemIds.length > 0) {
                 const { id } = jwt.decode(req.token)
                 const data = await NotesApp.deleteMany({ userId: id, _id: { $in: itemIds } })
-                return res.status(200).json({ status: 200, message: `udpated notes`, data })
+                return res.status(200).send({ status: 200, message: `udpated notes`, data })
 
             } else {
                 throw new Error("id missing/empty")
             }
         } catch (err) {
-            return res.status(400).json({ status: 400, message: err.message, data: null });
+            return res.status(400).send({ status: 400, message: err.message, data: null });
         }
     }
 
@@ -143,9 +143,9 @@ class notesController {
             const { id } = jwt.decode(req.token)
             const data = await NotesApp.find({ userId: id, isHidden: false })
 
-            res.status(200).json({ status: 200, message: `shown notes`, data })
+            res.status(200).send({ status: 200, message: `shown notes`, data })
         } catch (err) {
-            res.status(400).json({ status: 400, message: err.message, data: null });
+            res.status(400).send({ status: 400, message: err.message, data: null });
         }
     }
 
@@ -155,9 +155,9 @@ class notesController {
             const { id } = jwt.decode(req.token)
             const data = await NotesApp.find({ userId: id })
 
-            res.status(200).json({ status: 200, message: `all notes`, data })
+            res.status(200).send({ status: 200, message: `all notes`, data })
         } catch (err) {
-            res.status(400).json({ status: 400, message: err.message, data: null });
+            res.status(400).send({ status: 400, message: err.message, data: null });
         }
     }
 }

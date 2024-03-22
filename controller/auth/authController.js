@@ -1,5 +1,6 @@
 import { User } from "../../models/user.js";
 import bcrypt from "bcrypt";
+import { config } from "../../config/index.js";
 import jwt from "jsonwebtoken";
 
 
@@ -21,11 +22,11 @@ class authController {
                 }
 
 
-                const hashedPassword = bcrypt.hashSync(password, Number(process.env.SALT));
+                const hashedPassword = bcrypt.hashSync(password, Number(config.salt));
                 const user = await User.create({ email, password: hashedPassword });
 
                 if (user) {
-                    const token = jwt.sign({ email, id: user._id }, process.env.JWTSECRET, { expiresIn: '30d' });
+                    const token = jwt.sign({ email, id: user._id }, config.secret, { expiresIn: '30d' });
                     return res.status(200).send({ status: 400, "message": "user created successfully", data: { token, email } });
                 }
 
@@ -54,7 +55,7 @@ class authController {
                 const user = await User.findOne({ email });
 
                 if (user && bcrypt.compareSync(password, user.password)) {
-                    const token = jwt.sign({ email, id: user._id }, process.env.JWTSECRET, { expiresIn: '30d' });
+                    const token = jwt.sign({ email, id: user._id }, config.secret, { expiresIn: '30d' });
                     return res.status(200).send({ status: 200, "message": "User logged in Successfully", data: { token, email, orders: user.orders, cart: user.cart, } })
                 } else {
                     throw new Error("user not found/invalid credentials")
