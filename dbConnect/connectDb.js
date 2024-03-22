@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
 
 export const connectDb = (url) => {
-    try {
-        mongoose.connect(url).then(() => {
-            console.log("Database Connected");
-        })
-    } catch (err) {
-        console.log("Database Disconnected");
-    }
+    mongoose.connect(url)
+
+    mongoose.connection.on('error', (error) => {
+        console.error('MongoDB connection error:', error);
+        mongoose.connection.close();
+        process.exit(1);
+    });
+    mongoose.connection.once('open', () => {
+        console.log('Connected to MongoDB');
+    });
+
 }
