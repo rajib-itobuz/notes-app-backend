@@ -2,16 +2,17 @@ import { NotesApp } from "../../models/notes.js";
 import jwt from "jsonwebtoken";
 
 class notesController {
-    async addNote(req, res) {
+    async addNote(req, res, next) {
         try {
             const { id } = jwt.decode(req.token)
 
             let { title, description } = req.body;
-            title = title.trim();
-            description = description.trim();
+
 
 
             if (title && description) {
+                title = title.trim();
+                description = description.trim();
                 const note = await NotesApp.findOne({ title });
                 if (note) {
                     throw new Error("already exists")
@@ -24,11 +25,11 @@ class notesController {
             } else
                 throw new Error("missing fields")
         } catch (err) {
-            return res.status(400).send({ status: 400, message: err.message, data: null });
+            next(err);
         }
     }
 
-    async updateNote(req, res) {
+    async updateNote(req, res, next) {
         try {
             const { userId } = jwt.decode(req.token);
 
@@ -39,11 +40,12 @@ class notesController {
             const id = JSON.parse(req.query.id)
 
             let { title, description } = req.body;
-            title = title.trim();
-            description = description.trim();
+
 
 
             if (title || description) {
+                title = title.trim();
+                description = description.trim();
                 const newUpdatedNote = await NotesApp.findOneAndUpdate({ _id: id, userId }, { title, description }, { returnOriginal: false });
 
                 if (newUpdatedNote) {
@@ -52,11 +54,11 @@ class notesController {
             } else
                 throw new Error("missing fields")
         } catch (err) {
-            return res.status(400).send({ status: 400, message: err.message, data: null });
+            next(err);
         }
     }
 
-    async searchNote(req, res) {
+    async searchNote(req, res, next) {
         try {
 
             if (Object.keys(req.query).length > 0) {
@@ -69,11 +71,11 @@ class notesController {
                 throw new Error("missing query param")
             }
         } catch (err) {
-            res.status(400).send({ status: 400, message: err.message, data: null });
+            next(err);
         }
     }
 
-    async findLatest(req, res) {
+    async findLatest(req, res, next) {
         try {
             if (Object.keys(req.query).length > 0) {
                 const { id } = jwt.decode(req.token)
@@ -85,11 +87,11 @@ class notesController {
                 throw new Error("missing query param")
             }
         } catch (err) {
-            return res.status(400).send({ status: 400, message: err.message, data: null });
+            next(err);
         }
     }
 
-    async hideNotes(req, res) {
+    async hideNotes(req, res, next) {
         try {
             const { itemIds } = req.body;
             if (itemIds.length > 0) {
@@ -101,11 +103,11 @@ class notesController {
                 throw new Error("id missing/empty")
             }
         } catch (err) {
-            return res.status(400).send({ status: 400, message: err.message, data: null });
+            next(err);
         }
     }
 
-    async showNotes(req, res) {
+    async showNotes(req, res, next) {
         try {
             const { itemIds } = req.body;
             if (itemIds.length > 0) {
@@ -117,11 +119,11 @@ class notesController {
                 throw new Error("id missing/empty")
             }
         } catch (err) {
-            return res.status(400).send({ status: 400, message: err.message, data: null });
+            next(err);
         }
     }
 
-    async deleteNotes(req, res) {
+    async deleteNotes(req, res, next) {
         try {
             const { itemIds } = req.body;
             if (itemIds.length > 0) {
@@ -133,11 +135,11 @@ class notesController {
                 throw new Error("id missing/empty")
             }
         } catch (err) {
-            return res.status(400).send({ status: 400, message: err.message, data: null });
+            next(err);
         }
     }
 
-    async getNotes(req, res) {
+    async getNotes(req, res, next) {
         try {
 
             const { id } = jwt.decode(req.token)
@@ -145,11 +147,11 @@ class notesController {
 
             res.status(200).send({ status: 200, message: `shown notes`, data })
         } catch (err) {
-            res.status(400).send({ status: 400, message: err.message, data: null });
+            next(err);
         }
     }
 
-    async getAllNotes(req, res) {
+    async getAllNotes(req, res, next) {
         try {
 
             const { id } = jwt.decode(req.token)
@@ -157,7 +159,7 @@ class notesController {
 
             res.status(200).send({ status: 200, message: `all notes`, data })
         } catch (err) {
-            res.status(400).send({ status: 400, message: err.message, data: null });
+            next(err);
         }
     }
 }

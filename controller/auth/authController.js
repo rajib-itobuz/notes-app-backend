@@ -35,7 +35,7 @@ class authController {
             }
         } catch (err) {
 
-            return res.status(400).send({ status: 400, "message": err.message, data: null })
+            next(err);
         }
     }
 
@@ -66,7 +66,7 @@ class authController {
             }
 
         } catch (err) {
-            return res.status(400).send({ status: 400, "message": err.message, data: null })
+            next(err);
         }
 
 

@@ -13,6 +13,16 @@ connectDb(config.mongoURl);
 app.use(express.json());
 app.use(timeLog);
 app.use(manageRoute());
+app.use((err, req, res, next) => {
+    console.log("asdsd");
+    if (err) {
+        return res.status(400).send({
+            status: 400,
+            message: err.message,
+            data: null
+        })
+    }
+});
 
 
 app.listen(config.port, () => {
